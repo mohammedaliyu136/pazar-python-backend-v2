@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',  # <-- Here
 
     # Local Apps (Your project's apps)
-    'myapi.core',
+    #'myapi.core',
 
     # applications
     'account',
