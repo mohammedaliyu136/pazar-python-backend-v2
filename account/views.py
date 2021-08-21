@@ -17,6 +17,17 @@ class Addressviewsets(viewsets.ModelViewSet):
     queryset = Address.objects.all()
     serializer_class = AddressSerializers  
 
+    def get_queryset(self):
+        """
+        This view should return a list of all the purchases
+        for the currently authenticated user.
+        """
+        user = self.request.user
+        if(user.id != None):
+            return Address.objects.filter(user_id=user.id)
+        else:
+            queryset = Address.objects.all()
+
 class Profileviewsets(viewsets.ModelViewSet):
     #permission_classes = [AllowAny]
     queryset = Profile.objects.all()

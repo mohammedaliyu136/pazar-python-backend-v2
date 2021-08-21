@@ -1,6 +1,7 @@
 #from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models.fields import CharField
+from django.contrib.auth.models import User
 
 class Restaurant(models.Model):
     image_url = models.CharField(max_length=300)
@@ -75,6 +76,9 @@ class Product(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     rating = models.FloatField()
 
+    def __str__(self):
+        return self.name
+
 class Banner(models.Model):
     name = models.CharField(max_length=30)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
@@ -96,11 +100,20 @@ class Profile(models.Model):
     def __str__(self):
         return self.name
 
-class WishList(models.Model):
-    #user = models.ForeignKey(User, on_delete=models.CASCADE)
+class ProductWishList(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.product.name
+
+class RestaurantWishList(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.restaurant.name

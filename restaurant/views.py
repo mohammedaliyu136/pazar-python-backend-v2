@@ -20,8 +20,8 @@ from rest_framework import viewsets
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.views import APIView
 
-from .serializers import BannerSerializer, RestaurantSerializer, ProductSerializer, VariationSerializer, AddOnsSerializer, ChoiceOptionSerializer, CategorySerializer, OptionSerializer, WishListSerializer, userSerializers
-from .models import Banner, Category, Restaurant, Product, Variation, AddOns, ChoiceOption, Category, Option, Profile, WishList
+from .serializers import BannerSerializer, RestaurantSerializer, ProductSerializer, RestaurantWishListSerializer, VariationSerializer, AddOnsSerializer, ChoiceOptionSerializer, CategorySerializer, OptionSerializer, ProductWishListSerializer, userSerializers
+from .models import Banner, Category, Restaurant, Product, RestaurantWishList, Variation, AddOns, ChoiceOption, Category, Option, Profile, ProductWishList
 from django.contrib.auth.models import User
 
 
@@ -57,9 +57,17 @@ class OptionViewSet(viewsets.ModelViewSet):
     queryset = Option.objects.all()
     serializer_class = OptionSerializer
 
-class WishListViewSet(viewsets.ModelViewSet):
-    queryset = WishList.objects.all()
-    serializer_class = WishListSerializer
+class ProductWishListViewSet(viewsets.ModelViewSet):
+    queryset = ProductWishList.objects.all()
+    serializer_class = ProductWishListSerializer
+
+    def post(self, request,):
+        print('1111111111')
+        print(self.POST)
+
+class RestaurantWishListViewSet(viewsets.ModelViewSet):
+    queryset = RestaurantWishList.objects.all()
+    serializer_class = RestaurantWishListSerializer
 
 class ArticleListCreateAPIView(APIView):
     def get(self, request):
@@ -109,13 +117,34 @@ def user_login(request):
     return HttpResponse(html)
 
 @csrf_exempt
-@api_view(["POST"])
+#@api_view(["GET"])
+def add_product_wish_list(request):
+    now = datetime.datetime.now()
+    product = Product.objects.get(pk=request.GET.get('product'))
+    user = User.objects.get(pk=request.GET.get('user'))
+    print("product_id "+request.GET.get('product'))
+    print("user_id "+request.GET.get('user'))
+    print(product)
+    print(user)
+    product_wish_list_count = ProductWishList.objects.filter(
+            product=product.pk, 
+            user = user.pk)
+    if(len(product_wish_list_count)==0):
+            ProductWishList(product=product.pk, 
+            user = user.pk).save()
+        
+        
+    json = {'message':'Invalid credential','status':404}
+    return JsonResponse(json)
+
+
+@csrf_exempt
 def user_register(request):
     now = datetime.datetime.now()
     print(request)
-    if(request.method=='POST'):
+    if(request.method=='GET'):
         try:
-            print(request.POST)
+            print(request.GET)
             user = User(
             first_name=request.POST.get('first_name'),
             last_name=request.POST.get('last_name'),
