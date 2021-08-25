@@ -9,5 +9,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(router.urls)),
     path('api/restaurant/', include('restaurant.urls')),
-    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('api/api-token-auth/', obtain_auth_token, name='api_token_auth'),
 ]
