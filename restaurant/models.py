@@ -117,3 +117,39 @@ class RestaurantWishList(models.Model):
 
     def __str__(self):
         return self.restaurant.name
+        
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    coupon_discount_amount = models.FloatField()
+    coupon_discount_title = models.CharField(max_length=100)
+    order_amount = models.FloatField()
+    order_type = models.CharField(max_length=20)
+    payment_method = models.CharField(max_length=11)
+    contact_person_name = models.CharField(max_length=100)
+    contact_person_phone = models.CharField(max_length=100)
+    delivery_address = models.CharField(max_length=100)
+    order_note = models.CharField(max_length=200, blank=True)
+    coupon_code = models.CharField(max_length=11)
+    order_status = models.CharField(max_length=11, default='pending')
+
+
+
+    def __str__(self):
+        return self.user_fk.first_name+ ' ' + self.user_fk.last_name
+
+class OrderDetail(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order_status = models.CharField(max_length=30, default='pending')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    price = models.FloatField()
+    discount_on_product = models.FloatField()
+    quantity = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.product.name

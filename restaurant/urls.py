@@ -21,6 +21,8 @@ from restaurant import views
 urlpatterns = [
     path('login', views.user_login, name='login'),
     path('register', views.user_register, name='register'),
+    path('registeration', views.registeration_view, name='registeration'),
     path('add-product-wish-list', views.add_product_wish_list, name='add_product_wish_list'),
+    path('place-order', views.place_order_view, name='place_order_view'),
     path('user-info/', views.user_info, name='register'),
 ]

@@ -17,4 +17,6 @@ router.register(r'profile', account_views.Profileviewsets)
 router.register(r'config', account_views.Configviewsets)
 router.register(r'product-wish-list', restaurant_views.ProductWishListViewSet)
 router.register(r'restaurant-wish-list', restaurant_views.RestaurantWishListViewSet)
+router.register(r'order-list', restaurant_views.OrderViewSet)
+router.register(r'order-detail', restaurant_views.OrderDetailViewSet)
 
