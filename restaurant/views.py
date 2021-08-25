@@ -180,8 +180,10 @@ def registeration_view(request):
             print('poopopopopopooppo')
             print(serializer.data['username'])
             user = User.objects.get(username=serializer.data['username'])
+            print(user)
             token = Token.objects.create(user=user)
             data['token'] = token.key
+            print(token.key)
 
             data['reponse'] = "Successfully registered a new user."
             #data['email'] = account.email
