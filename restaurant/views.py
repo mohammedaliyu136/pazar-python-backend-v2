@@ -310,7 +310,7 @@ def place_order_view(request):
                 contact_person_phone = contact_person_phone,
                 delivery_address = delivery_address,
                 order_note = serializer.data['order_note'],
-                coupon_code = serializer.data['coupon_code'],
+                coupon_code = 'coupon_code',
                 order_status = 'delivered'
             )
             my_order.save()
