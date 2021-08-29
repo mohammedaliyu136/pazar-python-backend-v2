@@ -269,6 +269,13 @@ def place_order_view(request):
                 print(address.contact_person_name)
                 print(str(address.contact_person_number))
                 print(address.address)
+                contact_person_name = address.contact_person_name,
+                contact_person_phone = str(address.contact_person_number),
+                delivery_address = address.address,
+            else:
+                contact_person_name = user.first_name+' '+user.last_name,
+                contact_person_phone = 'nil',
+                delivery_address = 'nil',
             print(serializer.data['payment_method'])
             print('---------')
             """
@@ -296,11 +303,14 @@ def place_order_view(request):
                 order_amount = 2000,
                 order_type = 'order type',
                 payment_method = 'card payment',
-                contact_person_name = 'mohammed Aliyu kkk',
-                contact_person_phone = '08034902025',
-                delivery_address = 'abuja',
-                order_note = 'cook fast',
-                coupon_code = '28380',
+                #contact_person_name = 'mohammed Aliyu kkk',
+                #contact_person_phone = '08034902025',
+                #delivery_address = 'abuja',
+                contact_person_name = contact_person_name,
+                contact_person_phone = contact_person_phone,
+                delivery_address = delivery_address,
+                order_note = serializer.data['order_note'],
+                coupon_code = serializer.data['coupon_code'],
                 order_status = 'delivered'
             )
             my_order.save()
