@@ -130,13 +130,13 @@ class Order(models.Model):
     coupon_discount_title = models.CharField(max_length=100)
     order_amount = models.FloatField()
     order_type = models.CharField(max_length=20)
-    payment_method = models.CharField(max_length=11)
+    payment_method = models.CharField(max_length=100)
     contact_person_name = models.CharField(max_length=100)
     contact_person_phone = models.CharField(max_length=100)
     delivery_address = models.CharField(max_length=1000)
     order_note = models.CharField(max_length=200, blank=True)
-    coupon_code = models.CharField(max_length=11)
-    order_status = models.CharField(max_length=11, default='pending')
+    coupon_code = models.CharField(max_length=100)
+    order_status = models.CharField(max_length=100, default='pending')
 
 
 
