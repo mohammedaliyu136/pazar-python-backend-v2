@@ -258,7 +258,7 @@ def place_order_view(request):
             print('--------')
             print(user)
             print(restaurant)
-            print(address)
+            #print(address)
             print('========')
             print(serializer.data['coupon_discount_amount'],)
             print(serializer.data['coupon_discount_title'])
