@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Banner, Order, OrderDetail, ProductWishList, RestaurantWishList, Restaurant, Product, Variation, AddOns, ChoiceOption, Category, Option
+from .models import Banner, Order, OrderDetail, ProductWishList, PromoCode, Restaurant, Product, RestaurantWishList, Variation, AddOns, ChoiceOption, Category, Option
 
 from django.contrib.auth.models import User
   
@@ -67,21 +67,25 @@ class BannerSerializer(serializers.HyperlinkedModelSerializer):
 
 class ProductWishListSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
-    product = ProductSerializer()
-    user = userSerializers()
     class Meta:
         model = ProductWishList
         fields = '__all__'
 
 class RestaurantWishListSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
-    restaurant = RestaurantSerializer()
     class Meta:
         model = RestaurantWishList
         fields = '__all__'
 
+class PromoCodeSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
+    class Meta:
+        model = PromoCode
+        fields = '__all__'
+
 class OrderSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
+    products = ProductSerializer(many=True,)
     class Meta:
         model = Order
         fields = '__all__'

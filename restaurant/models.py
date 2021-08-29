@@ -101,28 +101,30 @@ class Profile(models.Model):
         return self.name
 
 class ProductWishList(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user_id = models.IntegerField()
+    product_id = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.product.name
+        return self.product_id
 
 class RestaurantWishList(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    user_id = models.IntegerField()
+    restaurant_id = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.restaurant.name
+        return self.restaurant_id
         
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    products = models.ManyToManyField(Product)
 
     coupon_discount_amount = models.FloatField()
     coupon_discount_title = models.CharField(max_length=100)
@@ -131,7 +133,7 @@ class Order(models.Model):
     payment_method = models.CharField(max_length=11)
     contact_person_name = models.CharField(max_length=100)
     contact_person_phone = models.CharField(max_length=100)
-    delivery_address = models.CharField(max_length=100)
+    delivery_address = models.CharField(max_length=1000)
     order_note = models.CharField(max_length=200, blank=True)
     coupon_code = models.CharField(max_length=11)
     order_status = models.CharField(max_length=11, default='pending')
@@ -139,7 +141,7 @@ class Order(models.Model):
 
 
     def __str__(self):
-        return self.user_fk.first_name+ ' ' + self.user_fk.last_name
+        return self.user.first_name+ ' ' + self.user.last_name
 
 class OrderDetail(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -153,3 +155,24 @@ class OrderDetail(models.Model):
 
     def __str__(self):
         return self.product.name
+
+class PromoCode(models.Model):
+    title = models.CharField(max_length=30,)
+    code = models.CharField(max_length=30,)
+    discount_type = models.CharField(max_length=30,)
+    status = models.CharField(max_length=30,)
+    code = models.CharField(max_length=30,)
+    discount = models.FloatField()
+    discount = models.FloatField()
+    min_purchase = models.FloatField()
+    max_discount = models.FloatField()
+
+    start_date = models.DateTimeField(auto_now_add=True)
+    expire_date = models.DateTimeField(auto_now=True)
+
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.code+' - '+self.title

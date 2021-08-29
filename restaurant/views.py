@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, response
 import datetime
 
+
 from rest_framework.authtoken.models import Token
 
 from django.views.decorators.csrf import csrf_exempt
@@ -21,8 +22,8 @@ from rest_framework import viewsets
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.views import APIView
 
-from .serializers import AddProductWishListSerializer, BannerSerializer, OrderDetailSerializer, OrderSerializer, PlaceOrderSerializer, RegisterationSerializer, RestaurantSerializer, ProductSerializer, RestaurantWishListSerializer, VariationSerializer, AddOnsSerializer, ChoiceOptionSerializer, CategorySerializer, OptionSerializer, ProductWishListSerializer, userSerializers
-from .models import Banner, Category, Order, OrderDetail, Restaurant, Product, RestaurantWishList, Variation, AddOns, ChoiceOption, Category, Option, Profile, ProductWishList
+from .serializers import AddProductWishListSerializer, BannerSerializer, OrderDetailSerializer, OrderSerializer, PlaceOrderSerializer, ProductWishListSerializer, PromoCodeSerializer, RegisterationSerializer, RestaurantSerializer, ProductSerializer, RestaurantWishListSerializer, VariationSerializer, AddOnsSerializer, ChoiceOptionSerializer, CategorySerializer, OptionSerializer, userSerializers
+from .models import Banner, Category, Order, OrderDetail, ProductWishList, PromoCode, Restaurant, Product, RestaurantWishList, Variation, AddOns, ChoiceOption, Category, Option, Profile
 from django.contrib.auth.models import User
 
 
@@ -70,6 +71,7 @@ class RestaurantWishListViewSet(viewsets.ModelViewSet):
     queryset = RestaurantWishList.objects.all()
     serializer_class = RestaurantWishListSerializer
 
+
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
@@ -78,9 +80,53 @@ class OrderDetailViewSet(viewsets.ModelViewSet):
     queryset = OrderDetail.objects.all()
     serializer_class = OrderDetailSerializer
 
+class PromoCodeViewSet(viewsets.ModelViewSet):
+    queryset = PromoCode.objects.all()
+    serializer_class = PromoCodeSerializer
+
+
 class ArticleListCreateAPIView(APIView):
     def get(self, request):
         return response({})
+
+
+@api_view(["GET"])
+@permission_classes((AllowAny, ))
+def apply_coupon(request):
+    print(request.GET['code'])
+    if(request.GET['code'] != None):
+        try:
+            promoCode = PromoCode.objects.get(code=request.GET['code'])
+        except:
+            return Response({},status=status.HTTP_404_NOT_FOUND)
+        serializer_context = {'request': request}#Request(request),}
+
+        s = PromoCodeSerializer(instance=promoCode, context=serializer_context)
+        return Response(s.data, status=status.HTTP_200_OK)
+    else:
+        json = {
+            'message':'Please Sign in',
+            }
+        return Response(json, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(["GET"])
+@permission_classes((AllowAny, ))
+def search(request):
+    print(request.GET['name'])
+    if(request.GET['name'] != None):
+        try:
+            products = Product.objects.filter(name__contains=request.GET['name'])
+        except:
+            return Response({},status=status.HTTP_404_NOT_FOUND)
+        serializer_context = {'request': request}#Request(request),}
+
+        ProductSerialized = ProductSerializer(instance=products, many=True, context=serializer_context)
+        return Response(ProductSerialized.data, status=status.HTTP_200_OK)
+    else:
+        json = {
+            'message':'Please Sign in',
+            }
+        return Response(json, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(["GET"])
@@ -146,6 +192,7 @@ def add_product_wish_list2(request):
     json = {'message':'Invalid credential','status':404}
     return JsonResponse(json)
 
+
 @api_view(['POST'])
 def add_product_wish_list(request):
     if request.method == 'POST':
@@ -201,29 +248,64 @@ def place_order_view(request):
         serializer = PlaceOrderSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
-            print(serializer.data)
+            #print(serializer.data)
             user = User.objects.get(pk=serializer.data['user_id'])
             restaurant = Restaurant.objects.get(pk=serializer.data['restaurant_id'])
-            address = Address.objects.get(pk=serializer.data['delivery_address_id'])
-            order = Order(
+            if(serializer.data['delivery_address_id']!=None):
+                address = Address.objects.get(pk=serializer.data['delivery_address_id'])
+            print('--------')
+            print(user)
+            print(restaurant)
+            print(address)
+            print('========')
+            print(serializer.data['coupon_discount_amount'],)
+            print(serializer.data['coupon_discount_title'])
+            print(serializer.data['order_amount'])
+            print(serializer.data['order_type'])
+            print(serializer.data['payment_method'])
+            if(serializer.data['delivery_address_id']!=None):
+                print(address.contact_person_name)
+                print(str(address.contact_person_number))
+                print(address.address)
+            print(serializer.data['payment_method'])
+            print('---------')
+            """
                 user = user,
                 restaurant = restaurant,
 
-                coupon_discount_amount = serializer.data['coupon_discount_amount'],
-                coupon_discount_title = serializer.data['coupon_discount_title'],
-                order_amount = serializer.data['order_amount'],
-                order_type = serializer.data['order_type'],
-                payment_method = serializer.data['payment_method'],
-                contact_person_name = address.contact_person_name,
-                contact_person_phone = address.contact_person_number,
-                delivery_address = address.address,
-                order_note = serializer.data['order_note'],
+                coupon_discount_amount = 22.22,#serializer.data['coupon_discount_amount'],
+                coupon_discount_title = 'SAT20',#serializer.data['coupon_discount_title'],
+                order_amount = 200.12,#serializer.data['order_amount'],
+                order_type = 'order type',#serializer.data['order_type'],
+                payment_method = 'card',#serializer.data['payment_method'],
+                contact_person_name = 'Mohammed',#address.contact_person_name,
+                contact_person_phone = '08034902020',#address.contact_person_number,
+                delivery_address = 'Gwarinpa, Abuja',#address.address,
+                order_note = 'Cook fast',#serializer.data['order_note'],
                 coupon_code = '09090'#serializer.data['coupon_code']
+                
+                #--------------------------------------------------
+                """
+            my_order = Order(
+                user = user, restaurant = restaurant,
+
+                coupon_discount_amount = 22.22,
+                coupon_discount_title = 'SAT20',
+                order_amount = 2000,
+                order_type = 'order type',
+                payment_method = 'card payment',
+                contact_person_name = 'mohammed Aliyu kkk',
+                contact_person_phone = '08034902025',
+                delivery_address = 'abuja',
+                order_note = 'cook fast',
+                coupon_code = '28380',
+                order_status = 'delivered'
             )
-            order.save()
+            my_order.save()
+            print(my_order)
+            print('---------')
 
             request.data['cart']
-            print(order.id)
             #print('----'+request.data["cart"]["product_id"])
             product_id = 1 #int(request.data['cart']['product_id'])
             product_1 = Product.objects.get(id=1)
@@ -233,25 +315,33 @@ def place_order_view(request):
             discount_amount = 100.23#request.data['cart']['discount_amount']
             quantity = 1#request.data['cart']['quantity']
             
+
+            my_order.products.add(product_1)
+            my_order.products.add(product_2)
             print(product_1)
             print(product_2)
             
+            """
             orderDetail = OrderDetail(
-                order = order,
+                order = my_order,
+                order_status = 'pending',
                 product = product_1,
-                price = price,
-                order_status = 'delivered',
-                discount_on_product = discount_amount,
-                quantity = quantity
+                price = 123.23,
+                discount_on_product = 100.23,
+                quantity = 2.0,
                 )
-            orderDetail = orderDetail.save()
+            """    
+
+
+            #orderDetail.save()
             print(product_1.pk)
             print(product_2.pk)
             #orderDetail.product.add(product_1, product_2)
+            
 
             #addon_ids = request.data['cart']['add_on_ids']
             data['message'] = "Successfully registered a new user."
-            data['order_id'] = order.id
+            data['order_id'] = my_order.id
         
             #data['email'] = account.email
             #data['username'] = account.username
