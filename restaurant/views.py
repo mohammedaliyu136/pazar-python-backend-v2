@@ -251,6 +251,8 @@ def place_order_view(request):
             #print(serializer.data)
             user = User.objects.get(pk=serializer.data['user_id'])
             restaurant = Restaurant.objects.get(pk=serializer.data['restaurant_id'])
+            print('----0000---0000---')
+            print(serializer.data['delivery_address_id'])
             if(serializer.data['delivery_address_id']!=-1):
                 address = Address.objects.get(pk=serializer.data['delivery_address_id'])
             print('--------')
