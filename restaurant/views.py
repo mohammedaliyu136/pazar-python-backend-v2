@@ -252,8 +252,8 @@ def place_order_view(request):
             user = User.objects.get(pk=serializer.data['user_id'])
             restaurant = Restaurant.objects.get(pk=serializer.data['restaurant_id'])
             print('----0000---0000---')
-            print(serializer.data['delivery_address_id'])
-            if(serializer.data['delivery_address_id']>0):
+            print(int(serializer.data['delivery_address_id']))
+            if(int(serializer.data['delivery_address_id'])>0):
                 address = Address.objects.get(pk=serializer.data['delivery_address_id'])
             print('--------')
             print(user)
@@ -265,7 +265,7 @@ def place_order_view(request):
             print(serializer.data['order_amount'])
             print(serializer.data['order_type'])
             print(serializer.data['payment_method'])
-            if(serializer.data['delivery_address_id']>0):
+            if(int(serializer.data['delivery_address_id'])>0):
                 print(address.contact_person_name)
                 print(str(address.contact_person_number))
                 print(address.address)
