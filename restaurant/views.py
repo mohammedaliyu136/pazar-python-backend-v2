@@ -115,7 +115,7 @@ def search(request):
     print(request.GET['name'])
     if(request.GET['name'] != None):
         try:
-            products = Product.objects.filter(name__contains=request.GET['name'])
+            products = Product.objects.filter(name__icontains=request.GET['name'])
         except:
             return Response({},status=status.HTTP_404_NOT_FOUND)
         serializer_context = {'request': request}#Request(request),}
