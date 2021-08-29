@@ -311,7 +311,7 @@ def place_order_view(request):
                 delivery_address = delivery_address,
                 order_note = serializer.data['order_note'],
                 coupon_code = 'coupon_code',
-                order_status = 'out_for_delivery'
+                order_status = 'pending'
             )
             my_order.save()
             print(my_order)
